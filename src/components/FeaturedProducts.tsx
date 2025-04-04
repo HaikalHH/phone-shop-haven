@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ProductCard } from './ProductCard';
 import { getFeaturedProducts } from '@/data/products';
 
@@ -14,7 +13,7 @@ export const FeaturedProducts: React.FC = () => {
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold">Featured Products</h2>
           <Link 
-            to="/products" 
+            href="/products" 
             className="inline-flex items-center text-primary hover:text-primary/80 font-medium"
           >
             View All 

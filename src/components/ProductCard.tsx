@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Star, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,7 +15,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border group">
-      <Link to={`/product/${product.id}`}>
+      <Link href={`/product/${product.id}`}>
         <div className="h-60 overflow-hidden relative">
           <img 
             src={product.image} 
@@ -40,7 +39,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
         </div>
         
-        <Link to={`/product/${product.id}`} className="hover:text-primary transition-colors">
+        <Link href={`/product/${product.id}`} className="hover:text-primary transition-colors">
           <h3 className="font-medium text-lg mb-2 line-clamp-2">{product.name}</h3>
         </Link>
         

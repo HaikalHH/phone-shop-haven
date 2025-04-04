@@ -1,10 +1,15 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Replicate __dirname behavior in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   output: 'standalone',
-  // We need to work with the existing alias from Vite
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -14,5 +19,4 @@ const nextConfig = {
   },
 };
 
-const path = require('path');
-module.exports = nextConfig;
+export default nextConfig;

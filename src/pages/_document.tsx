@@ -1,5 +1,5 @@
-
 import { Html, Head, Main, NextScript } from 'next/document';
+import Script from 'next/script';
 
 export default function Document() {
   return (
@@ -18,7 +18,7 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
-        <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+        <Script src="https://cdn.gpteng.co/gptengineer.js" strategy="lazyOnload" />
       </body>
     </Html>
   );

@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { ArrowRight, File } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 // Define RAM categories
 const ramCategories = [
@@ -38,7 +37,7 @@ export const CategorySection: React.FC = () => {
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold">Shop by RAM</h2>
           <Link 
-            to="/products" 
+            href="/products" 
             className="inline-flex items-center text-primary hover:text-primary/80 font-medium"
           >
             All Products 
@@ -49,7 +48,7 @@ export const CategorySection: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {ramCategories.map((category) => (
             <Link 
-              to={`/products?ram=${category.name.split(' ')[0]}`} 
+              href={`/products?ram=${category.name.split(' ')[0]}`} 
               key={category.id}
               className="group"
             >
