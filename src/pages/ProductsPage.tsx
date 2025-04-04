@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { SlidersHorizontal, X } from 'lucide-react';
+import { SlidersHorizontal, X, Ram } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { ProductCard } from '@/components/ProductCard';
 import { products, brands, searchProducts, getProductsByCategory, getProductsByBrand } from '@/data/products';
@@ -10,10 +10,23 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 
+// Function to filter products by RAM
+const getProductsByRam = (ramSize: string) => {
+  // In a real app, this would be based on your actual data structure
+  // For this demo, we'll assume phones have RAM between 4-12 GB and filter randomly
+  const ramSizeNum = parseInt(ramSize);
+  return products.filter((product, index) => {
+    // Using product ID to deterministically assign RAM values
+    const productRam = (product.id % 4 + 1) * 4; // This will give 4, 8, 12, or 16 GB of RAM
+    return productRam === ramSizeNum;
+  });
+};
+
 const ProductsPage = () => {
   const location = useLocation();
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedRam, setSelectedRam] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState([0, 1500]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [sortOption, setSortOption] = useState('featured');
@@ -22,6 +35,10 @@ const ProductsPage = () => {
   const searchQuery = searchParams.get('search');
   const categoryParam = searchParams.get('category');
   const brandParam = searchParams.get('brand');
+  const ramParam = searchParams.get('ram');
+
+  // RAM options for filtering
+  const ramOptions = ['4', '6', '8', '12'];
 
   // Apply filters whenever they change
   useEffect(() => {
@@ -42,9 +59,23 @@ const ProductsPage = () => {
       setSelectedBrands(prev => [...prev, brandParam]);
     }
     
+    // Handle RAM filter from URL
+    if (ramParam && !selectedRam.includes(ramParam)) {
+      setSelectedRam(prev => [...prev, ramParam]);
+    }
+    
     // Apply selected brands filter
     if (selectedBrands.length > 0) {
       result = result.filter(product => selectedBrands.includes(product.brand));
+    }
+    
+    // Apply selected RAM filter
+    if (selectedRam.length > 0) {
+      // For demo purposes, we'll filter based on product ID modulo 4 to simulate RAM filtering
+      result = result.filter(product => {
+        const productRam = (product.id % 4 + 1) * 4; // This will give 4, 8, 12, or 16 GB
+        return selectedRam.some(ram => parseInt(ram) === productRam);
+      });
     }
     
     // Apply price range filter
@@ -62,7 +93,7 @@ const ProductsPage = () => {
     }
     
     setFilteredProducts(result);
-  }, [searchQuery, categoryParam, brandParam, selectedBrands, priceRange, sortOption]);
+  }, [searchQuery, categoryParam, brandParam, ramParam, selectedBrands, selectedRam, priceRange, sortOption]);
 
   // Toggle brand selection
   const toggleBrand = (brand: string) => {
@@ -73,9 +104,19 @@ const ProductsPage = () => {
     );
   };
 
+  // Toggle RAM selection
+  const toggleRam = (ram: string) => {
+    setSelectedRam(prev => 
+      prev.includes(ram)
+        ? prev.filter(r => r !== ram)
+        : [...prev, ram]
+    );
+  };
+
   // Clear all filters
   const clearFilters = () => {
     setSelectedBrands([]);
+    setSelectedRam([]);
     setPriceRange([0, 1500]);
     setSortOption('featured');
   };
@@ -128,6 +169,28 @@ const ProductsPage = () => {
                 </div>
               </div>
 
+              {/* RAM */}
+              <div className="mb-6">
+                <h3 className="font-medium mb-3">RAM</h3>
+                <div className="space-y-2">
+                  {ramOptions.map(ram => (
+                    <div key={ram} className="flex items-center">
+                      <Checkbox 
+                        id={`ram-${ram}`}
+                        checked={selectedRam.includes(ram)}
+                        onCheckedChange={() => toggleRam(ram)}
+                      />
+                      <label 
+                        htmlFor={`ram-${ram}`}
+                        className="ml-2 text-sm font-medium cursor-pointer"
+                      >
+                        {ram} GB
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* Brands */}
               <div>
                 <h3 className="font-medium mb-3">Brands</h3>
@@ -162,18 +225,28 @@ const ProductsPage = () => {
                     ? `Search Results for "${searchQuery}"` 
                     : categoryParam 
                       ? `${categoryParam}` 
-                      : "All Products"}
+                      : ramParam
+                        ? `${ramParam}GB RAM Smartphones`
+                        : "All Products"}
                 </h1>
                 <p className="text-gray-500">{filteredProducts.length} products found</p>
               </div>
 
               {/* Active Filters */}
-              {(selectedBrands.length > 0 || (priceRange[0] > 0 || priceRange[1] < 1500)) && (
+              {(selectedBrands.length > 0 || selectedRam.length > 0 || (priceRange[0] > 0 || priceRange[1] < 1500)) && (
                 <div className="flex flex-wrap gap-2 my-2 sm:my-0">
                   {selectedBrands.map(brand => (
                     <Badge key={brand} variant="outline" className="gap-1">
                       {brand}
                       <button onClick={() => toggleBrand(brand)}>
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                  {selectedRam.map(ram => (
+                    <Badge key={ram} variant="outline" className="gap-1">
+                      {ram}GB RAM
+                      <button onClick={() => toggleRam(ram)}>
                         <X className="h-3 w-3" />
                       </button>
                     </Badge>

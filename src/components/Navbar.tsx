@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Search, Menu, X, User, LogOut, LayoutDashboard } from 'lucide-react';
@@ -25,6 +24,13 @@ export const Navbar: React.FC = () => {
     }
   };
 
+  const scrollToContact = () => {
+    document.getElementById('contact-section')?.scrollIntoView({ behavior: 'smooth' });
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
       <div className="container mx-auto py-4">
@@ -38,8 +44,16 @@ export const Navbar: React.FC = () => {
           <nav className="hidden md:flex items-center space-x-6">
             <Link to="/" className="font-medium hover:text-primary transition-colors">Home</Link>
             <Link to="/products" className="font-medium hover:text-primary transition-colors">Products</Link>
-            <Link to="/about" className="font-medium hover:text-primary transition-colors">About</Link>
-            <Link to="/contact" className="font-medium hover:text-primary transition-colors">Contact</Link>
+            <a 
+              href="#contact-section" 
+              onClick={(e) => { 
+                e.preventDefault(); 
+                scrollToContact(); 
+              }}
+              className="font-medium hover:text-primary transition-colors cursor-pointer"
+            >
+              Contact
+            </a>
           </nav>
 
           {/* Desktop Actions */}
@@ -152,8 +166,16 @@ export const Navbar: React.FC = () => {
             <nav className="flex flex-col space-y-4">
               <Link to="/" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Home</Link>
               <Link to="/products" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Products</Link>
-              <Link to="/about" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>About</Link>
-              <Link to="/contact" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Contact</Link>
+              <a 
+                href="#contact-section"
+                className="font-medium py-2 hover:text-primary transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToContact();
+                }}
+              >
+                Contact
+              </a>
               
               {isAuthenticated ? (
                 <>
