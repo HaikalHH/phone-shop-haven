@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { SlidersHorizontal, X, Memory } from 'lucide-react';
+import { SlidersHorizontal, X, File } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { ProductCard } from '@/components/ProductCard';
 import { products, brands, searchProducts, getProductsByCategory, getProductsByBrand } from '@/data/products';

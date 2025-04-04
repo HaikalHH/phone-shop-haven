@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Memory } from 'lucide-react';
+import { ArrowRight, File } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Define RAM categories
@@ -69,7 +69,7 @@ export const CategorySection: React.FC = () => {
                     <h3 className="font-medium text-lg">{category.name}</h3>
                     <p className="text-sm text-gray-500">{category.count} Products</p>
                   </div>
-                  <Memory className="h-6 w-6 text-primary" />
+                  <File className="h-6 w-6 text-primary" />
                 </div>
               </div>
             </Link>
