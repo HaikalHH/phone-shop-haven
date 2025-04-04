@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Star, Truck, ShieldCheck, ArrowLeft, ShoppingCart, Heart, Share2, ChevronDown, ChevronUp } from 'lucide-react';
@@ -9,6 +8,7 @@ import { getProductById } from '@/data/products';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PriceNegotiation } from '@/components/PriceNegotiation';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -202,6 +202,13 @@ const ProductDetail = () => {
                   <Share2 className="h-5 w-5" />
                 </Button>
               </div>
+              
+              {/* Price Negotiation */}
+              <PriceNegotiation 
+                productId={product.id} 
+                productName={product.name} 
+                originalPrice={product.price} 
+              />
               
               {/* Shipping & Returns */}
               <div className="space-y-3 mb-8">
