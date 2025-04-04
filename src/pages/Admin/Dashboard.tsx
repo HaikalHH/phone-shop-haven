@@ -20,7 +20,8 @@ import {
   Banknote,
   Edit,
   Trash2,
-  Plus
+  Plus,
+  File
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -30,10 +31,10 @@ const Dashboard = () => {
   const [newProduct, setNewProduct] = useState({
     name: '',
     brand: '',
-    category: 'Smartphones',
+    ram: '4',
     price: '',
-    image: '',
     description: '',
+    image: null as File | null,
   });
 
   // Redirect non-admin users
@@ -48,11 +49,17 @@ const Dashboard = () => {
     setNewProduct({
       name: '',
       brand: '',
-      category: 'Smartphones',
+      ram: '4',
       price: '',
-      image: '',
       description: '',
+      image: null,
     });
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setNewProduct({...newProduct, image: e.target.files[0]});
+    }
   };
 
   return (
@@ -239,6 +246,7 @@ const Dashboard = () => {
                           <th className="px-4 py-3">ID</th>
                           <th className="px-4 py-3">Product</th>
                           <th className="px-4 py-3">Brand</th>
+                          <th className="px-4 py-3">RAM</th>
                           <th className="px-4 py-3">Price</th>
                           <th className="px-4 py-3">Stock</th>
                           <th className="px-4 py-3">Actions</th>
@@ -259,6 +267,7 @@ const Dashboard = () => {
                               </div>
                             </td>
                             <td className="px-4 py-3">{product.brand}</td>
+                            <td className="px-4 py-3">{(product.id % 4 + 1) * 4}GB</td>
                             <td className="px-4 py-3">${product.price}</td>
                             <td className="px-4 py-3">
                               {product.inStock ? (
@@ -269,7 +278,11 @@ const Dashboard = () => {
                             </td>
                             <td className="px-4 py-3">
                               <div className="flex space-x-2">
-                                <Button variant="ghost" size="icon">
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  onClick={() => navigate(`/admin/edit-product/${product.id}`)}
+                                >
                                   <Edit className="h-4 w-4" />
                                 </Button>
                                 <Button variant="ghost" size="icon">
@@ -321,16 +334,17 @@ const Dashboard = () => {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="category">Category</Label>
+                          <Label htmlFor="ram">RAM (GB)</Label>
                           <select 
-                            id="category"
+                            id="ram"
                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                            value={newProduct.category}
-                            onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
+                            value={newProduct.ram}
+                            onChange={(e) => setNewProduct({...newProduct, ram: e.target.value})}
                           >
-                            <option value="Smartphones">Smartphones</option>
-                            <option value="Tablets">Tablets</option>
-                            <option value="Accessories">Accessories</option>
+                            <option value="4">4 GB</option>
+                            <option value="6">6 GB</option>
+                            <option value="8">8 GB</option>
+                            <option value="12">12 GB</option>
                           </select>
                         </div>
                         <div>
@@ -346,13 +360,23 @@ const Dashboard = () => {
                           />
                         </div>
                         <div className="md:col-span-2">
-                          <Label htmlFor="imageUrl">Image URL</Label>
+                          <Label htmlFor="image">Product Image</Label>
                           <Input 
-                            id="imageUrl" 
-                            value={newProduct.image}
-                            onChange={(e) => setNewProduct({...newProduct, image: e.target.value})}
+                            id="image" 
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
                             required
                           />
+                          {newProduct.image && (
+                            <div className="mt-2">
+                              <img 
+                                src={URL.createObjectURL(newProduct.image)} 
+                                alt="Preview" 
+                                className="h-24 object-contain rounded-md border" 
+                              />
+                            </div>
+                          )}
                         </div>
                         <div className="md:col-span-2">
                           <Label htmlFor="description">Description</Label>
@@ -407,7 +431,13 @@ const Dashboard = () => {
                               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Completed</span>
                             </td>
                             <td className="px-4 py-3">
-                              <Button variant="ghost" size="sm">View</Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => navigate('/admin/order-details/ORD-001')}
+                              >
+                                View
+                              </Button>
                             </td>
                           </tr>
                           <tr className="bg-white border-b">
@@ -419,7 +449,13 @@ const Dashboard = () => {
                               <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Shipped</span>
                             </td>
                             <td className="px-4 py-3">
-                              <Button variant="ghost" size="sm">View</Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => navigate('/admin/order-details/ORD-002')}
+                              >
+                                View
+                              </Button>
                             </td>
                           </tr>
                           <tr className="bg-white border-b">
@@ -431,7 +467,13 @@ const Dashboard = () => {
                               <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Processing</span>
                             </td>
                             <td className="px-4 py-3">
-                              <Button variant="ghost" size="sm">View</Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => navigate('/admin/order-details/ORD-003')}
+                              >
+                                View
+                              </Button>
                             </td>
                           </tr>
                           <tr className="bg-white border-b">
@@ -443,7 +485,13 @@ const Dashboard = () => {
                               <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Confirmed</span>
                             </td>
                             <td className="px-4 py-3">
-                              <Button variant="ghost" size="sm">View</Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => navigate('/admin/order-details/ORD-004')}
+                              >
+                                View
+                              </Button>
                             </td>
                           </tr>
                           <tr className="bg-white">
@@ -455,7 +503,13 @@ const Dashboard = () => {
                               <span className="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">Pending</span>
                             </td>
                             <td className="px-4 py-3">
-                              <Button variant="ghost" size="sm">View</Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => navigate('/admin/order-details/ORD-005')}
+                              >
+                                View
+                              </Button>
                             </td>
                           </tr>
                         </tbody>
@@ -490,7 +544,13 @@ const Dashboard = () => {
                             <td className="px-4 py-3">3</td>
                             <td className="px-4 py-3">$2,599.00</td>
                             <td className="px-4 py-3">
-                              <Button variant="ghost" size="sm">View</Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => navigate('/admin/customer-details/C001')}
+                              >
+                                View
+                              </Button>
                             </td>
                           </tr>
                           <tr className="bg-white border-b">
@@ -500,7 +560,13 @@ const Dashboard = () => {
                             <td className="px-4 py-3">1</td>
                             <td className="px-4 py-3">$899.00</td>
                             <td className="px-4 py-3">
-                              <Button variant="ghost" size="sm">View</Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => navigate('/admin/customer-details/C002')}
+                              >
+                                View
+                              </Button>
                             </td>
                           </tr>
                           <tr className="bg-white border-b">
@@ -510,7 +576,13 @@ const Dashboard = () => {
                             <td className="px-4 py-3">2</td>
                             <td className="px-4 py-3">$2,998.00</td>
                             <td className="px-4 py-3">
-                              <Button variant="ghost" size="sm">View</Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => navigate('/admin/customer-details/C003')}
+                              >
+                                View
+                              </Button>
                             </td>
                           </tr>
                           <tr className="bg-white border-b">
@@ -520,7 +592,79 @@ const Dashboard = () => {
                             <td className="px-4 py-3">1</td>
                             <td className="px-4 py-3">$699.00</td>
                             <td className="px-4 py-3">
-                              <Button variant="ghost" size="sm">View</Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => navigate('/admin/customer-details/C004')}
+                              >
+                                View
+                              </Button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Price Negotiation Requests Tab */}
+              <TabsContent value="priceRequests" className="space-y-6">
+                <h1 className="text-2xl font-bold mb-4">Price Negotiation Requests</h1>
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="relative overflow-x-auto">
+                      <table className="w-full text-sm text-left">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-3">Request ID</th>
+                            <th className="px-4 py-3">Customer</th>
+                            <th className="px-4 py-3">Product</th>
+                            <th className="px-4 py-3">Original Price</th>
+                            <th className="px-4 py-3">Requested Price</th>
+                            <th className="px-4 py-3">Status</th>
+                            <th className="px-4 py-3">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="bg-white border-b">
+                            <td className="px-4 py-3">#PR001</td>
+                            <td className="px-4 py-3">John Doe</td>
+                            <td className="px-4 py-3">iPhone 13 Pro</td>
+                            <td className="px-4 py-3">$999.00</td>
+                            <td className="px-4 py-3">$899.00</td>
+                            <td className="px-4 py-3">
+                              <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Pending</span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="flex gap-2">
+                                <Button size="sm" variant="outline" className="text-green-600">
+                                  Approve
+                                </Button>
+                                <Button size="sm" variant="outline" className="text-red-600">
+                                  Decline
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr className="bg-white border-b">
+                            <td className="px-4 py-3">#PR002</td>
+                            <td className="px-4 py-3">Sarah Williams</td>
+                            <td className="px-4 py-3">Samsung Galaxy S21</td>
+                            <td className="px-4 py-3">$799.00</td>
+                            <td className="px-4 py-3">$750.00</td>
+                            <td className="px-4 py-3">
+                              <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Pending</span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="flex gap-2">
+                                <Button size="sm" variant="outline" className="text-green-600">
+                                  Approve
+                                </Button>
+                                <Button size="sm" variant="outline" className="text-red-600">
+                                  Decline
+                                </Button>
+                              </div>
                             </td>
                           </tr>
                         </tbody>
