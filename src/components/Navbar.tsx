@@ -1,5 +1,7 @@
+
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { ShoppingCart, Search, Menu, X, User, LogOut, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +14,7 @@ export const Navbar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { getCartCount } = useCart();
   const { user, isAuthenticated, logout, isAdmin } = useAuth();
+  const router = useRouter();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -20,7 +23,7 @@ export const Navbar: React.FC = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`;
+      router.push(`/products?search=${encodeURIComponent(searchQuery)}`);
     }
   };
 
@@ -36,14 +39,14 @@ export const Navbar: React.FC = () => {
       <div className="container mx-auto py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
+          <Link href="/" className="flex items-center">
             <span className="text-2xl font-bold text-primary">PhoneShop</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="font-medium hover:text-primary transition-colors">Home</Link>
-            <Link to="/products" className="font-medium hover:text-primary transition-colors">Products</Link>
+            <Link href="/" className="font-medium hover:text-primary transition-colors">Home</Link>
+            <Link href="/products" className="font-medium hover:text-primary transition-colors">Products</Link>
             <a 
               href="#contact-section" 
               onClick={(e) => { 
@@ -86,12 +89,12 @@ export const Navbar: React.FC = () => {
                     </Button>
                     <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md overflow-hidden z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                       <div className="p-2">
-                        <Link to="/profile" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100 rounded-md">
+                        <Link href="/profile" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100 rounded-md">
                           <User className="h-4 w-4 mr-2" />
                           Profile
                         </Link>
                         {isAdmin() && (
-                          <Link to="/admin" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100 rounded-md">
+                          <Link href="/admin" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100 rounded-md">
                             <LayoutDashboard className="h-4 w-4 mr-2" />
                             Admin Dashboard
                           </Link>
@@ -109,12 +112,12 @@ export const Navbar: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <Link to="/login">
+              <Link href="/login">
                 <Button variant="outline">Login</Button>
               </Link>
             )}
 
-            <Link to="/cart" className="relative">
+            <Link href="/cart" className="relative">
               <Button variant="ghost" size="icon">
                 <ShoppingCart className="h-5 w-5" />
                 {getCartCount() > 0 && (
@@ -128,7 +131,7 @@ export const Navbar: React.FC = () => {
 
           {/* Mobile Menu Button */}
           <div className="flex items-center md:hidden">
-            <Link to="/cart" className="mr-4 relative">
+            <Link href="/cart" className="mr-4 relative">
               <Button variant="ghost" size="icon">
                 <ShoppingCart className="h-5 w-5" />
                 {getCartCount() > 0 && (
@@ -164,8 +167,8 @@ export const Navbar: React.FC = () => {
               </div>
             </form>
             <nav className="flex flex-col space-y-4">
-              <Link to="/" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Home</Link>
-              <Link to="/products" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Products</Link>
+              <Link href="/" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Home</Link>
+              <Link href="/products" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Products</Link>
               <a 
                 href="#contact-section"
                 className="font-medium py-2 hover:text-primary transition-colors"
@@ -179,9 +182,9 @@ export const Navbar: React.FC = () => {
               
               {isAuthenticated ? (
                 <>
-                  <Link to="/profile" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Profile</Link>
+                  <Link href="/profile" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Profile</Link>
                   {isAdmin() && (
-                    <Link to="/admin" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Admin Dashboard</Link>
+                    <Link href="/admin" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Admin Dashboard</Link>
                   )}
                   <button 
                     onClick={() => { logout(); toggleMenu(); }}
@@ -191,7 +194,7 @@ export const Navbar: React.FC = () => {
                   </button>
                 </>
               ) : (
-                <Link to="/login" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Login</Link>
+                <Link href="/login" className="font-medium py-2 hover:text-primary transition-colors" onClick={toggleMenu}>Login</Link>
               )}
             </nav>
           </div>
