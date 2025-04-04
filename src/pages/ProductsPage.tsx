@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { SlidersHorizontal, X, Ram } from 'lucide-react';
+import { SlidersHorizontal, X, Memory } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { ProductCard } from '@/components/ProductCard';
 import { products, brands, searchProducts, getProductsByCategory, getProductsByBrand } from '@/data/products';
@@ -10,14 +9,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 
-// Function to filter products by RAM
 const getProductsByRam = (ramSize: string) => {
-  // In a real app, this would be based on your actual data structure
-  // For this demo, we'll assume phones have RAM between 4-12 GB and filter randomly
   const ramSizeNum = parseInt(ramSize);
   return products.filter((product, index) => {
-    // Using product ID to deterministically assign RAM values
-    const productRam = (product.id % 4 + 1) * 4; // This will give 4, 8, 12, or 16 GB of RAM
+    const productRam = (product.id % 4 + 1) * 4;
     return productRam === ramSizeNum;
   });
 };
@@ -37,53 +32,42 @@ const ProductsPage = () => {
   const brandParam = searchParams.get('brand');
   const ramParam = searchParams.get('ram');
 
-  // RAM options for filtering
   const ramOptions = ['4', '6', '8', '12'];
 
-  // Apply filters whenever they change
   useEffect(() => {
     let result = [...products];
     
-    // Handle search query
     if (searchQuery) {
       result = searchProducts(searchQuery);
     }
     
-    // Handle category filter
     if (categoryParam) {
       result = getProductsByCategory(categoryParam);
     }
     
-    // Handle brand filter from URL
     if (brandParam && !selectedBrands.includes(brandParam)) {
       setSelectedBrands(prev => [...prev, brandParam]);
     }
     
-    // Handle RAM filter from URL
     if (ramParam && !selectedRam.includes(ramParam)) {
       setSelectedRam(prev => [...prev, ramParam]);
     }
     
-    // Apply selected brands filter
     if (selectedBrands.length > 0) {
       result = result.filter(product => selectedBrands.includes(product.brand));
     }
     
-    // Apply selected RAM filter
     if (selectedRam.length > 0) {
-      // For demo purposes, we'll filter based on product ID modulo 4 to simulate RAM filtering
       result = result.filter(product => {
-        const productRam = (product.id % 4 + 1) * 4; // This will give 4, 8, 12, or 16 GB
+        const productRam = (product.id % 4 + 1) * 4;
         return selectedRam.some(ram => parseInt(ram) === productRam);
       });
     }
     
-    // Apply price range filter
     result = result.filter(
       product => product.price >= priceRange[0] && product.price <= priceRange[1]
     );
     
-    // Apply sorting
     if (sortOption === 'price-low') {
       result.sort((a, b) => a.price - b.price);
     } else if (sortOption === 'price-high') {
@@ -95,7 +79,6 @@ const ProductsPage = () => {
     setFilteredProducts(result);
   }, [searchQuery, categoryParam, brandParam, ramParam, selectedBrands, selectedRam, priceRange, sortOption]);
 
-  // Toggle brand selection
   const toggleBrand = (brand: string) => {
     setSelectedBrands(prev => 
       prev.includes(brand)
@@ -104,7 +87,6 @@ const ProductsPage = () => {
     );
   };
 
-  // Toggle RAM selection
   const toggleRam = (ram: string) => {
     setSelectedRam(prev => 
       prev.includes(ram)
@@ -113,7 +95,6 @@ const ProductsPage = () => {
     );
   };
 
-  // Clear all filters
   const clearFilters = () => {
     setSelectedBrands([]);
     setSelectedRam([]);
@@ -125,7 +106,6 @@ const ProductsPage = () => {
     <Layout>
       <div className="container mx-auto py-8">
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Mobile Filter Toggle */}
           <div className="md:hidden mb-4">
             <Button 
               onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
@@ -137,7 +117,6 @@ const ProductsPage = () => {
             </Button>
           </div>
 
-          {/* Filters Sidebar */}
           <aside className={`w-full md:w-64 md:block ${isMobileFilterOpen ? 'block' : 'hidden'}`}>
             <div className="bg-white p-6 rounded-lg shadow-sm sticky top-24">
               <div className="flex justify-between items-center mb-4">
@@ -152,7 +131,6 @@ const ProductsPage = () => {
                 </Button>
               </div>
 
-              {/* Price Range */}
               <div className="mb-6">
                 <h3 className="font-medium mb-3">Price Range</h3>
                 <Slider 
@@ -169,7 +147,6 @@ const ProductsPage = () => {
                 </div>
               </div>
 
-              {/* RAM */}
               <div className="mb-6">
                 <h3 className="font-medium mb-3">RAM</h3>
                 <div className="space-y-2">
@@ -191,7 +168,6 @@ const ProductsPage = () => {
                 </div>
               </div>
 
-              {/* Brands */}
               <div>
                 <h3 className="font-medium mb-3">Brands</h3>
                 <div className="space-y-2">
@@ -215,9 +191,7 @@ const ProductsPage = () => {
             </div>
           </aside>
 
-          {/* Products Grid */}
           <div className="flex-1">
-            {/* Header with results count and sort */}
             <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <h1 className="text-2xl font-bold mb-1">
@@ -232,7 +206,6 @@ const ProductsPage = () => {
                 <p className="text-gray-500">{filteredProducts.length} products found</p>
               </div>
 
-              {/* Active Filters */}
               {(selectedBrands.length > 0 || selectedRam.length > 0 || (priceRange[0] > 0 || priceRange[1] < 1500)) && (
                 <div className="flex flex-wrap gap-2 my-2 sm:my-0">
                   {selectedBrands.map(brand => (
@@ -262,7 +235,6 @@ const ProductsPage = () => {
                 </div>
               )}
 
-              {/* Sort Options */}
               <div className="w-full sm:w-auto">
                 <select 
                   value={sortOption}
